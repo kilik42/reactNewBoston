@@ -27,6 +27,8 @@
         console.log('removing comment');
       },
       save: function(){
+        var val = this.refs.newText.value;
+        console.log('nw comment:' + val);
         this.setState({editing: false});
       },
 
@@ -43,7 +45,7 @@
       renderForm: function(){
         return (
           <div className="commentContainer">
-                <textArea defaultValue={this.props.children}></textArea>
+                <textArea ref = "newText" defaultValue={this.props.children}></textArea>
                 <button  onClick={this.save} className="button-success">save</button>
 
            </div>
@@ -52,19 +54,54 @@
       render: function(){
             if(this.state.editing){
               return this.renderForm();
-            } else{
+            } else {
               return this.renderNormal();
             }
       }
     });
-        ReactDOM.render(
-          <div className="board">
-            <Comment> hey my name is marvin</Comment>
-            <Comment> Beans</Comment>
-            <Comment> Tuna</Comment>
-          </div>
-            , document.getElementById("container")
-        );
+
+
+    var Board = React.createClass({
+
+          getInitialState: function(){
+            return {
+              comments: [
+                'I like bacon',
+                'want to get ice cream',
+                'ok, we have enough comments now'
+              ]
+            }
+          },
+
+          removeComment: function (i) {
+            console.log('removing comments' + i);
+            var arr = this.state.comments;
+            arr.splice(i,1);
+            this.setState({comments: arr})
+          },
+          updateComment: function(newText, i){
+                var arr = this.state.comments;
+                arr[i] = newText;
+                this.setState({comments: arr})
+
+          },
+          eachComment: function(text, i){
+            return(<Comment key={i}> {text}</Comment>);
+          },
+
+          render: function (){
+            return (
+
+              <div className="board">
+                {this.state.comments.map(this.eachComment)}
+
+              </div>
+            );
+
+          }
+
+    });
+        ReactDOM.render(<Board />, document.getElementById("container"));
     </script>
 
 </body>
